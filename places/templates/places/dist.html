@@ -1,0 +1,10 @@
+<form method='post'>
+    {% csrf_token %}
+    {% if place_1 %}
+            {% if place_2 %}
+            <p>The distance from {{ place_1.city }}, {{ place_1.ST }} to {{ place_2.city }}, {{ place_2.ST }} is:</p>
+            {% endif %}
+    {% endif %}
+    <input type='text'/>
+    <input type='submit' value="Press Here" />
+</form>

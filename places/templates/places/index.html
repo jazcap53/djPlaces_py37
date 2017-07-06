@@ -1,0 +1,8 @@
+{% if place_names %}
+    {% for place in place_names %}
+        <p>{{ place.city }}, {{ place.ST }}:<br/>
+        lat: {{ place.lat }}, long: {{ place.lng }}<br/>
+        pop: {{ place.popn }}
+        </p>
+     {% endfor %}
+{% endif %}

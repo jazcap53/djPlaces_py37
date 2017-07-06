@@ -1,0 +1,9 @@
+<!-- File: places/templates/places/getHome.html -->
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>How Far From Where?</title>
+<form action='' method='post'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type='submit' value='OK' />
+</form>

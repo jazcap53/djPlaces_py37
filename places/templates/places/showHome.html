@@ -1,0 +1,24 @@
+<!-- File: places/templates/places/showHome.html -->
+<html>
+<head>
+<title>How Far From Where?</title>
+</head>
+<body>
+<p><b>{{ p.city }}, {{ p.ST }}</b> is at lat: {{ p.lat }}, long: {{ p.lng }} (pop: {{ p.popn }})</p>
+<p>
+<form action="{% url 'places:getHome' %}" method='get'>
+{% if s %}
+<table>
+    {% for place in s %}
+    <tr><td>{{ place.city }}, {{ place.ST }}</td><td style="width:25px"></td>
+        <td style="width:95px">lat: {{ place.lat }}</td><td style="width:125px">long: {{ place.lng }}</td>
+        <td style="width:130px">(pop: {{ place.popn }})</td>
+        <td>{{ place.distance }} miles </td></tr>
+    {% endfor %}
+</table>
+{% endif %}
+</p>
+    <input type=submit value='Search Another'/>
+</form>
+</body>
+</html>
