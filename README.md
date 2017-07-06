@@ -13,7 +13,7 @@ Near to Here is a simple website that yields a list of towns within a given dist
 ## Dependencies
 Python 3.6  
 Django 1.13.1  
-PostgreSQL 9.5.7
+PostgreSQL 9.5.7  
 psycopg2 2.7.1
 
 ## Disclaimer
