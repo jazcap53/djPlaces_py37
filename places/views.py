@@ -31,9 +31,9 @@ def getHome(request):
         form = GetHomeForm(request.POST)  # a form bound to the POST data
         if form.is_valid():  # all validation rules pass
             homeCity = form.cleaned_data['homeCity']
-            homeCity = re.sub(ur'[^a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ, -]', '', homeCity)
+            homeCity = re.sub(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ, -]', '', homeCity)
             homeState = form.cleaned_data['homeState']
-            homeState = re.sub(ur'[^a-zA-Z]', '', homeState)
+            homeState = re.sub(r'[^a-zA-Z]', '', homeState)
             cleanDist = form.cleaned_data['dist']
             cleanSorter = form.cleaned_data['sorter']
             cleanMinPop = form.cleaned_data['minPop']
@@ -65,21 +65,21 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
 
     # TODO: escape raw select query -- read doc
 
-    # length of a degree of longitude = (PI / 180) * radius of earth * latitude in degrees  <from: wikipedia> 
+    # length of a degree of longitude = (PI / 180) * radius of earth * latitude in degrees  <from: wikipedia>
     # 3963.1676 is radius of earth in miles
     # cos(lat * PI() / 180.0) is cosine of (lat in radians)
     # cos(((lat + pLat) / 2) * PI() / 180.0) is cosine of (avg of lat and pLat in radians)
     # cos((lat + pLat) * PI() / 360.0)       is ditto
     # (3963.1676 * cos((lat + pLat) * PI() / 360.0) * PI() / 180.0) is miles per degree lng at avg lat
-    # (dist / (3963.1676 * cos((lat + pLat) * PI() / 360.0) * PI() / 180.0)) is 
-    #     distance divided by miles per degree lng at avg lat is 
+    # (dist / (3963.1676 * cos((lat + pLat) * PI() / 360.0) * PI() / 180.0)) is
+    #     distance divided by miles per degree lng at avg lat is
     #     distance times degrees lng per mile at avg lat
     r = Place.objects.raw('SELECT id, "ST", city, lng, lat, popn, 0 as distance \
                            FROM pl_place \
                            WHERE lng <= %s + (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) \
                            AND lng >= %s - (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) \
                            AND lat <= %s + (%s * (360.0 / (PI() * 2.0 * 3963.1676))) \
-                           AND lat >= %s - (%s * (360.0 / (PI() * 2.0 * 3963.1676)))', 
+                           AND lat >= %s - (%s * (360.0 / (PI() * 2.0 * 3963.1676)))',
                            [pLng, dist, pLat, pLng, dist, pLat, pLat, dist, pLat, dist])
 
     r = list(r)
