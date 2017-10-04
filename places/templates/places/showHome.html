@@ -18,7 +18,8 @@
 </table>
 {% endif %}
 </p>
-    <input type=submit value='Search Another'/>
+    <input type="button" value="Repeat Search" onclick="history.back();" >
+    <input type="button" value="Clear and Search" onclick="location.href='http://localhost:8000/places/getHome/';" >
 </form>
 </body>
 </html>
