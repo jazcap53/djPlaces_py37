@@ -8,22 +8,26 @@ from .forms import GetHomeForm
 from .models import Place
 from .auxFns import distPtToPt
 
+
 # Create your views here.
 def index(request):
     ps = Place.objects.filter(ST='NY', city='New York')
     context = { 'place_names': ps }
     return render(request, 'places/index.html', context)
 
+
 def popn(request, state, town):
     p = get_object_or_404(Place, ST=state, city=town)
     context = { 'place_name': p }
     return render(request, 'places/popn.html', context)
+
 
 def dist(request):
     p1 = Place.objects.get(ST='CA', city='San Diego')
     p2 = Place.objects.get(ST='AL', city='Roanoke')
     context = { 'place_1': p1, 'place_2': p2, }
     return render(request, 'places/dist.html', context)
+
 
 def getHome(request):
     errMsg = ''
@@ -47,6 +51,7 @@ def getHome(request):
         form = GetHomeForm()  # an unbound form
     context = { 'form': form, 'errMsg': errMsg }
     return render(request, 'places/getHome.html', context)
+
 
 def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
     town = homeTown
@@ -74,24 +79,27 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
     # (dist / (3963.1676 * cos((lat + pLat) * PI() / 360.0) * PI() / 180.0)) is
     #     distance divided by miles per degree lng at avg lat is
     #     distance times degrees lng per mile at avg lat
-    r = Place.objects.raw('SELECT id, "ST", city, lng, lat, popn, 0 as distance \
-                           FROM pl_place \
-                           WHERE lng <= %s + (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) \
-                           AND lng >= %s - (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) \
-                           AND lat <= %s + (%s * (360.0 / (PI() * 2.0 * 3963.1676))) \
-                           AND lat >= %s - (%s * (360.0 / (PI() * 2.0 * 3963.1676)))',
-                           [pLng, dist, pLat, pLng, dist, pLat, pLat, dist, pLat, dist])
+    r = Place.objects.raw('SELECT id, "ST", city, lng, lat, popn, 0 as distance '
+                          'FROM pl_place '
+                          'WHERE lng <= %s + (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) '
+                          'AND lng >= %s - (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) '
+                          'AND lat <= %s + (%s * (360.0 / (PI() * 2.0 * 3963.1676))) '
+                          'AND lat >= %s - (%s * (360.0 / (PI() * 2.0 * 3963.1676)))',
+                          [pLng, dist, pLat, pLng, dist, pLat, pLat, dist, pLat, dist])
 
     r = list(r)
 
     s = []
 
     for dataline in r:
-        dataline.distance = distPtToPt(float(pLng), float(pLat), float(dataline.lng), float(dataline.lat))
-        if dataline.distance <= d and not (dataline.ST == state and dataline.city == town) and dataline.popn >= minP \
-                and dataline.popn <= maxP:
+        dataline.distance = distPtToPt(float(pLng), float(pLat),
+                                       float(dataline.lng),
+                                       float(dataline.lat))
+        if dataline.distance <= d and \
+                not (dataline.ST == state and dataline.city == town) and \
+                minP <= int(dataline.popn) <= maxP:
             dataline.distance = '{:,}'.format(dataline.distance)
-            dataline.popn = '{:,}'.format(dataline.popn)
+            dataline.popn = '{:,}'.format(int(dataline.popn))
             s.append(dataline)
 
     L = lambda x: x.city

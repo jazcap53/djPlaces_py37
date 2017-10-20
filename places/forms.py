@@ -1,8 +1,10 @@
 # File: places/forms.py
 # -*- coding: utf-8 -*-
 
-import re
+# TODO: remove the below line
+# import re
 from django import forms
+
 
 class GetHomeForm(forms.Form):
     SORT_CHOICES = (('1','by Name',), ('2','by Population (asc.)',), ('3','by Population (desc.)',), ('4','by Distance (asc.)',), \
