@@ -11,20 +11,20 @@ from .auxFns import distPtToPt
 
 # Create your views here.
 def index(request):
-    ps = Place.objects.filter(ST='NY', city='New York')
+    ps = Place.objects.filter(st='NY', city='New York')
     context = { 'place_names': ps }
     return render(request, 'places/index.html', context)
 
 
 def popn(request, state, town):
-    p = get_object_or_404(Place, ST=state, city=town)
+    p = get_object_or_404(Place, st=state, city=town)
     context = { 'place_name': p }
     return render(request, 'places/popn.html', context)
 
 
 def dist(request):
-    p1 = Place.objects.get(ST='CA', city='San Diego')
-    p2 = Place.objects.get(ST='AL', city='Roanoke')
+    p1 = Place.objects.get(st='CA', city='San Diego')
+    p2 = Place.objects.get(st='AL', city='Roanoke')
     context = { 'place_1': p1, 'place_2': p2, }
     return render(request, 'places/dist.html', context)
 
@@ -61,7 +61,7 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
     maxP = int(maxP.replace(',', ''))
     if maxP == 0:
         maxP = 999999999
-    p = Place.objects.get(ST=state, city=town)
+    p = Place.objects.get(st=state, city=town)
     p.popn = '{:,}'.format(p.popn)
     d = int(dist)
 
@@ -79,8 +79,8 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
     # (dist / (3963.1676 * cos((lat + pLat) * PI() / 360.0) * PI() / 180.0)) is
     #     distance divided by miles per degree lng at avg lat is
     #     distance times degrees lng per mile at avg lat
-    r = Place.objects.raw('SELECT id, "ST", city, lng, lat, popn, 0 as distance '
-                          'FROM pl_place '
+    r = Place.objects.raw('SELECT id, st, city, lng, lat, popn, 0 as distance '
+                          'FROM places_place '
                           'WHERE lng <= %s + (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) '
                           'AND lng >= %s - (%s / (3963.1676 * cos((lat + %s) * PI() / 360.0) * PI() / 180.0)) '
                           'AND lat <= %s + (%s * (360.0 / (PI() * 2.0 * 3963.1676))) '
@@ -96,7 +96,7 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
                                        float(dataline.lng),
                                        float(dataline.lat))
         if dataline.distance <= d and \
-                not (dataline.ST == state and dataline.city == town) and \
+                not (dataline.st == state and dataline.city == town) and \
                 minP <= int(dataline.popn) <= maxP:
             dataline.distance = '{:,}'.format(dataline.distance)
             dataline.popn = '{:,}'.format(int(dataline.popn))

@@ -6,6 +6,8 @@ from django.conf.urls import url
 
 from . import views
 
+# app_name = 'places'  # added 2019-02-18_01:25
+
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^dist/', views.dist, name='dist'),

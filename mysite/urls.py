@@ -17,6 +17,11 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^places/', include('places.urls', namespace='places')),
-    url(r'^admin/', include(admin.site.urls)),
+    # url(r'^places/', include('places.urls', namespace='places')),
+    # url(r'^places/', include(('places.urls', 'places'), namespace='places')),
+    url(r'^places/', include('places.urls'))  # ,
+    # url(r'^admin/', include(admin.site.urls))
 ]
+
+
+# from stack overflow: url(r'^reviews/', include(('reviews.urls', 'reviews'), namespace='reviews')),
