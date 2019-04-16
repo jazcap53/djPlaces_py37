@@ -1,8 +1,6 @@
 # File: places/forms.py
 # -*- coding: utf-8 -*-
 
-# TODO: remove the below line
-# import re
 from django import forms
 
 

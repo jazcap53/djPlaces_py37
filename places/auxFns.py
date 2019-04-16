@@ -1,8 +1,3 @@
-# File: places/auxFns.py
-
-# TODO: remove the below line (?)
-# from __future__ import division
-
 from math import pi, cos
 
 
@@ -17,17 +12,17 @@ def earthRadiusInMi():
     return 3963.1676
 
 
-def miPerDegLngAtLat(latDegrees):
-    latRadians = latDegrees * pi / 180.0  # convert degrees to radians
+def miPerDegLngAtLat(latInDegrees):
+    latInRadians = latInDegrees * pi / 180.0  # convert degrees to radians
     # earthCircumferenceInMi = 2 * pi * earthRadiusInMi()
-    # oneDegreeInMi = earthCircumferenceInMi * cos(latRadians) / 360
-    #               = 2 * pi * earthRadiusInMi() * cos(latRadians) / 360
-    #               = earthRadiusInMi() * cos(latRadians) * (pi / 180)
-    return earthRadiusInMi() * cos(latRadians) * (pi / 180.0)
+    # oneDegreeInMi = earthCircumferenceInMi * cos(latInRadians) / 360
+    #               = 2 * pi * earthRadiusInMi() * cos(latInRadians) / 360
+    #               = earthRadiusInMi() * cos(latInRadians) * (pi / 180)
+    return earthRadiusInMi() * cos(latInRadians) * (pi / 180.0)
 
 
-def degLngPerMiAtLat(latDegrees):
-    return 1.0 / miPerDegLngAtLat(latDegrees)
+def degLngPerMiAtLat(latInDegrees):
+    return 1.0 / miPerDegLngAtLat(latInDegrees)
 
 
 def miPerDegLat():

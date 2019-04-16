@@ -9,31 +9,17 @@ from .models import Place
 from .auxFns import distPtToPt
 
 
-# Create your views here.
 def index(request):
     ps = Place.objects.filter(st='NY', city='New York')
     context = { 'place_names': ps }
     return render(request, 'places/index.html', context)
 
 
-def popn(request, state, town):
-    p = get_object_or_404(Place, st=state, city=town)
-    context = { 'place_name': p }
-    return render(request, 'places/popn.html', context)
-
-
-def dist(request):
-    p1 = Place.objects.get(st='CA', city='San Diego')
-    p2 = Place.objects.get(st='AL', city='Roanoke')
-    context = { 'place_1': p1, 'place_2': p2, }
-    return render(request, 'places/dist.html', context)
-
-
 def getHome(request):
     errMsg = ''
-    if request.method == 'POST':  # if the form has been submitted
-        form = GetHomeForm(request.POST)  # a form bound to the POST data
-        if form.is_valid():  # all validation rules pass
+    if request.method == 'POST':
+        form = GetHomeForm(request.POST)
+        if form.is_valid():
             homeCity = form.cleaned_data['homeCity']
             homeCity = re.sub(r'[^a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ, -]', '', homeCity)
             homeState = form.cleaned_data['homeState']
@@ -54,6 +40,8 @@ def getHome(request):
 
 
 def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
+    # TODO: rename some variables
+    # TODO: reduce number of params (?)
     town = homeTown
     state = homeState
     dist = dist.replace(',', '')
@@ -68,7 +56,7 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
     pLat = p.lat
     pLng = p.lng
 
-    # TODO: see https://docs.djangoproject.com/en/2.2/topics/db/sql/
+    # TODO: see https://docs.djangoproject.com/en/2.2/topics/db/sql/  replace raw SQL
     # length of a degree of longitude = (PI / 180) * radius of earth * latitude in degrees  <from: wikipedia>
     # 3963.1676 is radius of earth in miles
     # cos(lat * PI() / 180.0) is cosine of (lat in radians)
@@ -87,7 +75,6 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
                           [pLng, dist, pLat, pLng, dist, pLat, pLat, dist, pLat, dist])
 
     r = list(r)
-
     s = []
 
     for dataline in r:
@@ -104,6 +91,7 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
     L = lambda x: x.city
     rev = False
 
+    # TODO: improve
     if sorter == '2':
         L = lambda x: int(x.popn.replace(',',''))
         rev = False

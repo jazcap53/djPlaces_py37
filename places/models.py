@@ -3,8 +3,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
 
-# Create your models here.
-
 
 class Place(models.Model):
     st = models.CharField('State', max_length=2, validators=[RegexValidator(regex=r'^[A-Z]{2}$', 
