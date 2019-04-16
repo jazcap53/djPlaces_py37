@@ -68,8 +68,7 @@ def showHome(request, homeTown, homeState, dist, sorter, minP, maxP):
     pLat = p.lat
     pLng = p.lng
 
-    # TODO: escape raw select query -- read doc
-
+    # TODO: see https://docs.djangoproject.com/en/2.2/topics/db/sql/
     # length of a degree of longitude = (PI / 180) * radius of earth * latitude in degrees  <from: wikipedia>
     # 3963.1676 is radius of earth in miles
     # cos(lat * PI() / 180.0) is cosine of (lat in radians)
